@@ -10,13 +10,18 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 display_help() {
-	echo "Usage: ./build.sh [arguments]..."
-	echo
-	echo "  -f, --full      build a rootfs with all the recommended packages"
-	echo "  -m, --minimal   build a rootfs with only the most basic packages"
-	echo "  -a, --arch      select a different architecture (default: armhf)"
-	echo "                  possible options: armhf, arm64, i386, amd64"
-	echo "  -h, --help      display this help message"
+	echo "##############"
+	echo "VERSION: 1.0 #"
+	echo "###########################################################################"
+	echo "Usage: ./build.sh [arguments]...						"
+	echo "										"
+	echo "  -f, --full      build a rootfs with all the recommended packages	"
+	echo "  -m, --default   build a rootfs with only the most basic packages	"
+	echo "  -k, --kek	build a rootfs with kek additions including kekrepo	"
+	echo "  -a, --arch      select a different architecture (default: armhf)	"
+	echo "                  possible options: armhf, arm64, i386, amd64		"
+	echo "  -h, --help      display this help message				"
+	echo "###########################################################################"
 	echo
 }
 
@@ -42,8 +47,11 @@ while [[ $# -gt 0 ]]; do
 		-f|--full)
 			build_size=full
 			;;
-		-m|--minimal)
-			build_size=minimal
+		-m|--default)
+			build_size=default
+			;;
+		-k|--kek)
+			build_size=kek
 			;;
 		-a|--arch)
 			case $2 in
@@ -66,7 +74,7 @@ done
 [ "$build_size" ] || exit_help "Build size not specified!"
 
 # set default architecture for most Android devices if not specified
-[ "$build_arch" ] || build_arch=armhf
+[ "$build_arch" ] || build_arch=arm64
 
 rootfs="kali-$build_arch"
 build_output="output/kalifs-$build_arch-$build_size"
@@ -173,7 +181,7 @@ fi
 # MINIMAL PACKAGES
 # usbutils and pciutils is needed for wifite (unsure why) and apt-transport-https for updates
 pkg_minimal="openssh-server kali-defaults kali-archive-keyring
-	apt-transport-https ntpdate usbutils pciutils sudo vim"
+	apt-transport-https ntpdate usbutils pciutils sudo vim fish"
 
 # DEFAULT PACKAGES FULL INSTALL
 pkg_full="kali-linux-nethunter
@@ -181,7 +189,7 @@ pkg_full="kali-linux-nethunter
           msfpc exe2hexbat bettercap
           libapache2-mod-php7.3 libreadline6-dev libncurses5-dev libnewlib-arm-none-eabi
           binutils-arm-none-eabi gcc-arm-none-eabi autoconf libtool make gcc-9 g++-9
-          libbz2-dev libxml2-dev zlib1g-dev"
+          libbz2-dev libxml2-dev zlib1g-dev fish"
 
 # ARCH SPECIFIC PACKAGES
 pkg_minimal_armhf="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils nethunter-utils"
@@ -264,8 +272,12 @@ echo "[+] Starting stage 3 (packages/installation)"
 . stages/stage3
 
 # Cleanup stage
-echo "[+] Starting stage 4 (cleanup)"
-. stages/stage4-cleanup
+echo "[+] Starting stage 5 (cleanup)"
+. stages/stage4-kek
+
+# Cleanup stage
+echo "[+] Starting stage 5 (cleanup)"
+. stages/stage5-cleanup
 
 # Unmount and fix nano
 cleanup_host

@@ -133,12 +133,6 @@ EOF
                 tar -xzf $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm64.tar.gz -C $rootfs/opt/microsoft/powershell
 		rm $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm64.tar.gz
 	fi
-	if [ $build_arch == "armhf" ]; then
-		mkdir -p $rootfs/opt/microsoft/powershell
-		wget -P $rootfs/opt/microsoft/powershell https://github.com/PowerShell/PowerShell/releases/download/v6.2.0-preview.4/powershell-6.2.0-preview.4-linux-arm32.tar.gz
-               tar -xzf $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm32.tar.gz -C $rootfs/opt/microsoft/powershell
-		rm $rootfs/opt/microsoft/powershell/powershell-6.2.0-preview.4-linux-arm32.tar.gz
-	fi
 	# Microsoft no longer supports deletion of the file DELETE_ME_TO_DISABLE_CONSOLEHOST_TELEMETRY to disable telemetry
 	# We have to set this environment variable instead
 	cat << EOF > "$rootfs/etc/profile.d/powershell.sh"
@@ -223,12 +217,6 @@ cat << EOF >> "$rootfs/root/.bash_profile"
 . /root/.profile
 cd ~
 EOF
-
-# Removing Xfce4 panel plugins that are not needed in KeX
-echo "[+] Removing unneeded Xfce4 panel plugins"
-sed -i '/\n/!N;/\n.*\n/!N;/\n.*\n.*kazam/{$d;N;N;d};P;D' "$rootfs/etc/xdg/xfce4/panel/default.xml"
-sed -i '/pulseaudio/d' "$rootfs/etc/xdg/xfce4/panel/default.xml"
-sed -i '/power-manager-plugin/d' "$rootfs/etc/xdg/xfce4/panel/default.xml"
 
 # Modify Kismet log saving folder
 echo "[+] Modifying Kismet log folder"

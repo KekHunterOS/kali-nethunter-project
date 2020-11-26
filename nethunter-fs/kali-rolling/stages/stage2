@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Add our sources
-echo "Creating /etc/apt/sources.list file"
+echo "[!] Creating /etc/apt/sources.list file"
 if [ -n "$build_repo" ]; then
     cat << EOF > "$rootfs/etc/apt/sources.list"
 deb http://http.kali.org/kali kali-rolling main contrib non-free
@@ -20,7 +20,7 @@ fi
 # fix for TUN symbolic link to enable programs like openvpn
 # set terminal length to 80 because root destroy terminal length
 # add fd to enable stdin/stdout/stderr
-echo "I: Creating /root/.bash_profile file"
+echo "[!] Creating /root/.bash_profile file"
 cat << EOF > "$rootfs/root/.bash_profile"
 export TERM=xterm-256color
 stty columns 80
@@ -39,7 +39,7 @@ fi
 EOF
 
 # Create hosts file
-echo "I: Creating /etc/hosts file"
+echo "[!] Creating /etc/hosts file"
 cat << EOF > "$rootfs/etc/hosts"
 127.0.0.1       kali localhost
 ::1             localhost ip6-localhost ip6-loopback
@@ -50,26 +50,26 @@ ff02::2         ip6-allrouters
 EOF
 
 # Create default capture folders along with /sdcard, /external_sd, /system, /root/.ssh
-echo "I: Creating /root/.ssh directory"
+echo "[!] Creating /root/.ssh directory"
 mkdir -p "$rootfs/root/.ssh"
 
-echo "I: Creating /root/.vnc directory"
+echo "[!] Creating /root/.vnc directory"
 mkdir -p "$rootfs/root/.vnc"
 
-echo "I: Creating /etc/skel/.vnc directory"
+echo "[!] Creating /etc/skel/.vnc directory"
 mkdir -p "$rootfs/etc/skel/.vnc"
 
-echo "I: Creating /sdcard, /external_sd, /system mountpoints"
+echo "[!] Creating /sdcard, /external_sd, /system mountpoints"
 mkdir -p "$rootfs/sdcard" "$rootfs/external_sd" "$rootfs/system"
 
-echo "I: Creating /captures directories"
+echo "[!] Creating /captures directories"
 cap="$rootfs/captures"
 mkdir -p "$cap/evilap" "$cap/ettercap" "$cap/kismet/db" "$cap/nmap" \
 	"$cap/sslstrip" "$cap/tshark" "$cap/wifite" "$cap/tcpdump" \
 	"$cap/urlsnarf" "$cap/dsniff" "$cap/honeyproxy" "$cap/mana/sslsplit"
 
 # Link /lib/modules to /system/lib/modules for modprobe
-echo "I: Creating mountpoint /lib/modules"
+echo "[!] Creating mountpoint /lib/modules"
 mkdir -p "$rootfs/lib/modules"
 
 echo "[+] Completed stage 2!"
