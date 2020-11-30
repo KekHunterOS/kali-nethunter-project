@@ -271,9 +271,13 @@ echo "[+] Starting stage 2 (repo/config)"
 echo "[+] Starting stage 3 (packages/installation)"
 . stages/stage3
 
-# Cleanup stage
-echo "[+] Starting stage 5 (cleanup)"
+if [ "$build_size" = kek ]; then
+# Kek stage
+echo "[+] Starting stage 4 (kek)"
 . stages/stage4-kek
+else
+echo "[!] Skipping kek as u didnt choose kek chroot variant."
+fi
 
 # Cleanup stage
 echo "[+] Starting stage 5 (cleanup)"
